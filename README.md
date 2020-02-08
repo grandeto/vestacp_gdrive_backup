@@ -18,10 +18,12 @@ Backup VestaCP Users to separate Google Drive folders
 Next steps assume you are on VPS server having root access.
 If this is not your case apply sudo to the commands.
 
-- `apt-get install git`
-- `apt-get update`
+### Install git
+- `apt update`
 - `apt install software-properties-common`
 - `add-apt-repository ppa:git-core/ppa # apt update; apt install git`
+
+### Install and config Go
 - `wget https://dl.google.com/go/go1.12.linux-amd64.tar.gz`
 - `mv go1.12.linux-amd64.tar.gz /usr/local/`
 - `cd /usr/local`
@@ -41,6 +43,7 @@ If this is not your case apply sudo to the commands.
 
 `go version`
 
+### Google Drive API configuration
 - // Login to Google Developers and create a new project. Give it a name, for instance VestaCP-Gdrive-backup 
 - https://console.developers.google.com/apis/dashboard
 - // Enable Google Drive API and then click on Credentials
@@ -49,15 +52,15 @@ If this is not your case apply sudo to the commands.
 - // Click on "What credentials do I need?"
 - // Give it a name, for instance VestaCP-Gdrive-backup and save
 
-
-
+### Handle existing `gdrive` installation
 - // If old local `gdrive` installation exist:
 - `cd ~`
 - `rm -r gdrive`
 - `rm -r .gdrive`
 - `rm /usr/local/bin/gdrive`
 
-- // Get `gdrive` Linux app
+
+### Install `gdrive` app
 - `go get github.com/gdrive-org/gdrive`
 - // Change the Credentials from Google Drive API in the `gdrive` source code
 - `cd go/src/github.com/gdrive-org/gdrive/`
@@ -65,17 +68,15 @@ If this is not your case apply sudo to the commands.
 - // On lines 17 and 18 change the credentials (ClientId and ClientSecret) with those created in Google Drive API
 - `const ClientId = "your-client-id.apps.googleusercontent.com"`
 - `const ClientSecret = "your-client-secret"`
-
 - // Compile the executable by run `go build` in `go/src/github.com/gdrive-org/gdrive/`
 - `go build`
 - `install gdrive /usr/local/bin/gdrive`
 - `install gdrive ~/go/bin/gdrive`
-
 - // You’ll need to tell Google Drive to allow this program `gdrive` to connect to your account. To do this, run the `gdrive` program with any parameter and copy the text it gives you to your browser. Then paste in to your SSH window the response code that Google gives you. Run the following:
 - `/usr/local/bin/gdrive about`
 - // Follow the steps from the output
 
-- // Create Bash script
+### Create vesta_gdrive_backup Bash script
 - `cd ~`
 - `touch vesta_gdrive_backup.sh`
 - `chmod +x vesta_gdrive_backup.sh`
@@ -85,11 +86,13 @@ If this is not your case apply sudo to the commands.
 - // Following the example in `vesta_gdrive_backup.sh` (lines 42-45), add a new function execution at the end of the `vesta_gdrive_backup.sh` for every user you wish to backup in Google Drive.
 - // This script will create a separate folder for every VestaCP user in `/vesta-gdrive-backups`, will move the latest backup files from `/backup` to these separate folders and will remove the last backup file from every separate folder if the maximum backups count is exceeded
 
+### Google Drive post-configuration
 - // Open the Google Drive account you just integrated with `gdrive`
 - https://drive.google.com/drive/
 - Create separate folders for every VestaCP user you wish to backup to Google Drive
 - The name of each of these folders should be same as the name of the related VestaCP user you wish to backup to Google Drive
 
+### Add vesta_gdrive_backup cron tasks
 - // Open your VestCP admin dashboard and go to CRON section
 - https://123.123.123.123:8083/list/cron/
 - // Find the cron job named `sudo /usr/local/vesta/bin/v-backup-users`
