@@ -1,22 +1,22 @@
 #!/bin/bash
 SHELL=/bin/bash PATH=/bin:/sbin:/usr/bin:/usr/sbin
-function vesta_gdrive_backup() {
+function vestacp_gdrive_backup() {
     A=$1
     mincount=$2
     varlen=${#A}
 
     cd /
-    if [ ! -d "vesta-gdrive-backups" ]; then
-        mkdir "vesta-gdrive-backups"
+    if [ ! -d "vestacp-gdrive-backups" ]; then
+        mkdir "vestacp-gdrive-backups"
     fi
-    if [ ! -d "vesta-empty-dir" ]; then
-        mkdir "vesta-empty-dir"
+    if [ ! -d "vestacp-empty-dir" ]; then
+        mkdir "vestacp-empty-dir"
     fi
-    if [ ! -f "/vesta-empty-dir/emptyfile.txt" ]; then
-        touch "/vesta-empty-dir/emptyfile.txt"
+    if [ ! -f "/vestacp-empty-dir/emptyfile.txt" ]; then
+        touch "/vestacp-empty-dir/emptyfile.txt"
     fi
 
-    cd /vesta-gdrive-backups
+    cd /vestacp-gdrive-backups
     if [ ! -d "$A" ]; then
         mkdir "$A"
     fi
@@ -25,11 +25,11 @@ function vesta_gdrive_backup() {
     for file in *.tar
     do
         if [[ ${file:0:$varlen} = "$A" ]]; then
-            mv "$file" "/vesta-gdrive-backups/$A"
+            mv "$file" "/vestacp-gdrive-backups/$A"
         fi
     done
 
-    cd /vesta-gdrive-backups
+    cd /vestacp-gdrive-backups
     if [ -d "$A" ]; then
         files=$(find "$A" -type f | wc -l)
         if ((${files} > ${mincount})); then
@@ -40,6 +40,6 @@ function vesta_gdrive_backup() {
 }
 
 # Example
-# vesta-user = name of user from VestaCP dashboard
+# user = name of user in VestaCP
 # 2 = maximum number of backup files allowed
-vesta-gdrive-backup vesta-user 2
+vestacp_gdrive_backup user 2
