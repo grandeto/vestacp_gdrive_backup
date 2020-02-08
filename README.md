@@ -1,6 +1,10 @@
 # Vesta Control Panel Google Drive Backup
 Backup VestaCP Users to separate Google Drive folders
 
+## Environment
+
+- Ubuntu 16.04
+
 ## Requirements
 
 - https://github.com/gdrive-org/gdrive
